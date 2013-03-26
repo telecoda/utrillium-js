@@ -293,8 +293,8 @@ fireGun: function() {
     var rx = (this.gunOffset.x * cosA) - (this.gunOffset.y * sinA);
     var ry = (this.gunOffset.x * sinA) + (this.gunOffset.y * cosA);
 
-    var bx = this.mainPlayer.pos.x+rx +this.playerCx - this.gunCx;
-    var by = this.mainPlayer.pos.y+ry + this.playerCy - this.gunCy;
+    var bx = this.mainPlayer.pos.x+rx +this.playerCx;
+    var by = this.mainPlayer.pos.y+ry + this.playerCy;
     
 
 
@@ -337,6 +337,9 @@ init: function(x, y, settings) {
     // call the constructor
     this.parent(x, y, settings);
  
+    // offset bullet pos by half width
+    this.pos.x -= this.width/2;
+    this.pos.y -= this.height/2;
     // set bullet speed
     //this.setVelocity(3, 0);
     this.setFriction(0,0);
