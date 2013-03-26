@@ -63,6 +63,8 @@ var jsApp = {
         me.audio.init("mp3,ogg");
 
 	    me.sys.gravity=0;
+
+        me.debug.renderHitBox = true;
  
         // set all resources to be loaded
         me.loader.onload = this.loaded.bind(this);
@@ -86,7 +88,9 @@ var jsApp = {
         me.state.set(me.state.PLAY, new PlayScreen());
  	    // add our player entity in the entity pool
    	    me.entityPool.add("mainPlayer", PlayerEntity);
-             
+        me.entityPool.add("gun", GunEntity);
+        
+
        	// enable the keyboard
        	me.input.bindKey(me.input.KEY.LEFT,  "left");
         me.input.bindKey(me.input.KEY.A,  "left");

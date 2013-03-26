@@ -21,7 +21,10 @@ var PlayerEntity = me.ObjectEntity.extend({
 
     // add a basic gun
     this.weapon = new GunEntity(this, { image: 'basic_gun', spritewidth: 16 });
-    me.game.add(this.weapon, this.z);
+    
+    console.log("Add weapon");
+
+    me.game.add(this.weapon, 10);
     me.game.sort();
  
 
@@ -186,6 +189,9 @@ update: function() {
     }
     return false;
  
+},
+draw: function(context, x, y) {
+        this.parent(context,x,y);
 }
  
 });
@@ -216,10 +222,18 @@ init: function(mainPlayer, settings) {
     this.reloadTime = 30;
     this.reloadCounter=0;
 
-    this.gunOffset = {x:this.mainPlayer.width/2,y:-7};
+    this.playerCx = this.mainPlayer.width/2;
+    this.playerCy = this.mainPlayer.height/2;
+    this.gunCx = this.width/2;
+    this.gunCy = this.height/2;
+    // gunOffset is centre of gun
+    this.gunOffset={ x: this.mainPlayer.width/2 ,
+                     y: 0};
 
     // adjust the bounding box
-    this.updateColRect(1, 12, 1, 12);
+    this.updateColRect(0, 16, 0, 6);
+
+
   
 },
  
@@ -230,9 +244,18 @@ update: function() {
 
     // update gun relative to mainPlayer
     this.angle = this.mainPlayer.angle;
-    this.pos.x = this.mainPlayer.pos.x + 20;
-    this.pos.y = this.mainPlayer.pos.y + 26;
+
+    var cosA = Math.cos(this.mainPlayer.angle);
+    var sinA = Math.sin(this.mainPlayer.angle);
  
+    // rotate gunOffset by angle
+    var rx = (this.gunOffset.x * cosA) - (this.gunOffset.y * sinA);
+    var ry = (this.gunOffset.x * sinA) + (this.gunOffset.y * cosA);
+
+    this.pos.x = this.mainPlayer.pos.x+rx +this.playerCx - this.gunCx;
+    this.pos.y = this.mainPlayer.pos.y+ry + this.playerCy - this.gunCy;
+    
+
     if(me.input.isKeyPressed('fire')) {
         if(!this.reloading) {
          this.fireGun();
@@ -265,15 +288,17 @@ fireGun: function() {
 
     var cosA = Math.cos(this.mainPlayer.angle);
     var sinA = Math.sin(this.mainPlayer.angle);
-    // calc start position of bullet based on angle of player
-    
-    // rotate location of bullet around plane   
-    var bx = (this.gunOffset.x * cosA) - (this.gunOffset.y * sinA);
-    var by = (this.gunOffset.x * sinA) + (this.gunOffset.y * cosA);
+ 
+    // rotate gunOffset by angle
+    var rx = (this.gunOffset.x * cosA) - (this.gunOffset.y * sinA);
+    var ry = (this.gunOffset.x * sinA) + (this.gunOffset.y * cosA);
 
-    // add position of player
-    bx = bx + this.mainPlayer.pos.x + this.mainPlayer.width/2;
-    by = by + this.mainPlayer.pos.y + this.mainPlayer.height/2;
+    var bx = this.mainPlayer.pos.x+rx +this.playerCx - this.gunCx;
+    var by = this.mainPlayer.pos.y+ry + this.playerCy - this.gunCy;
+    
+
+
+
     var shot = new BulletEntity(bx, by, 
         { image: 'bullet', spritewidth: 13 });
     shot.angle = 0;//this.mainPlayer.angle;
@@ -286,10 +311,10 @@ fireGun: function() {
     me.game.sort();
 
 
-},
+}
+,
 draw: function(context, x, y) {
-        this.z=-1;
-        context.drawImage(this.image, this.pos.x, this.pos.y);
+        this.parent(context,x,y);
     }
 
  
