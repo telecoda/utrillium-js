@@ -27,6 +27,9 @@ var PlayerEntity = me.ObjectEntity.extend({
     me.game.add(this.weapon, 10);
     me.game.sort();
  
+    // make it collidable
+    this.collidable = true;
+
 
     // adjust the bounding box
     this.updateColRect(8, 48, 8, 48);
@@ -154,33 +157,18 @@ update: function() {
 	   console.log(res.yprop.type)
 	}
 
-	/*
-	// check player status after collision check
-	var updated = (this.vel.x!=0 || this.vel.y!=0);
-
-
- 
-	    // check & update player movement
-	    this.updateMovement();
 	 
-	    // check for collision
-	    var res = me.game.collide(this);
+	// check for collision with other entities
+	res = me.game.collide(this);
  
 	 
 	if (res) {
 	    if (res.obj.type == me.game.ENEMY_OBJECT) {
-		if ((res.y > 0) && ! this.jumping) {
-		    // bounce
-		    me.audio.play("stomp");
-		    this.forceJump();
-		} else {
-		    // let's flicker in case we touched an enemy
 		    this.flicker(45);
-		}
 	    }
 	}
 
-	*/ 
+	
     // update animation if necessary
     if (this.vel.x!=0 || this.vel.y!=0) {
         // update object animation
@@ -401,6 +389,80 @@ update: function() {
  
 });
 
+
+/* --------------------------
+an enemy Entity
+------------------------ */
+var EnemyEntity = me.ObjectEntity.extend({
+    init: function(x, y, settings) {
+        // define this here instead of tiled
+        settings.image = "enemy_plane";
+        settings.spritewidth = 64;
+ 
+        // call the parent constructor
+        this.parent(x, y, settings);
+ 
+        this.angle=0;
+
+        this.startX = x;
+        this.endX = x + settings.width - settings.spritewidth;
+        // size of sprite
+ 
+        // make him start from the right
+        this.pos.x = x + settings.width - settings.spritewidth;
+        //this.walkLeft = true;
+ 
+        // walking & jumping speed
+        //this.setVelocity(4, 6);
+ 
+         // adjust the bounding box
+        this.updateColRect(16, 32, 16, 32);
+
+        // make it collidable
+        this.collidable = true;
+        // make it a enemy object
+        this.type = me.game.ENEMY_OBJECT;
+ 
+    },
+ 
+    // call by the engine when colliding with another object
+    // obj parameter corresponds to the other object (typically the player) touching this one
+    onCollision: function(res, obj) {
+        if (this.alive) {
+            this.flicker(45);
+        }
+    },
+ 
+    // manage the enemy movement
+    update: function() {
+        // do nothing if not visible
+        if (!this.visible)
+            return false;
+ 
+        /*
+        if (this.alive) {
+            if (this.walkLeft && this.pos.x <= this.startX) {
+                this.walkLeft = false;
+            } else if (!this.walkLeft && this.pos.x >= this.endX) {
+                this.walkLeft = true;
+            }
+            this.doWalk(this.walkLeft);
+        } else {
+            this.vel.x = 0;
+        }
+         
+        // check and update movement
+        this.updateMovement();
+         */
+        // update animation if necessary
+        if (this.vel.x!=0 || this.vel.y!=0) {
+            // update objet animation
+            this.parent(this);
+            return true;
+        }
+        return false;
+    }
+});
 
 /*-------------- 
 a score HUD Item

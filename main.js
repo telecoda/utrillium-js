@@ -16,6 +16,11 @@ var g_resources = [{
     src: "data/sprite/plane.png"
 },
 {
+    name: "enemy_plane",
+    type: "image",
+    src: "data/sprite/enemy_plane.png"
+},
+{
     name: "bullet",
     type: "image",
     src: "data/sprite/bullet01.png"
@@ -89,6 +94,8 @@ var jsApp = {
  	    // add our player entity in the entity pool
    	    me.entityPool.add("mainPlayer", PlayerEntity);
         me.entityPool.add("gun", GunEntity);
+        me.entityPool.add("enemyPlane", EnemyEntity);
+
         
 
        	// enable the keyboard

@@ -49,6 +49,12 @@
     <property name="spritewidth" value="64"/>
    </properties>
   </object>
-  <object x="285" y="551" width="12"/>
+  <object name="enemyPlane" type="EnemyEntity" x="384" y="256" width="64" height="64">
+   <properties>
+    <property name="gravity" value="0"/>
+    <property name="image" value="enemy_plane"/>
+    <property name="spritewidth" value="64"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>
